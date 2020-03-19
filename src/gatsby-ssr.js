@@ -4,6 +4,8 @@ import { Minimatch } from "minimatch";
 import flattenDeep from "lodash.flattendeep";
 const JSDOM = eval('require("jsdom")').JSDOM;
 const minimatch = require("minimatch");
+import path from "path";
+import fs from "fs";
 
 const ampBoilerplate = `body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}`;
 const ampNoscriptBoilerplate = `body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}`;
@@ -27,6 +29,8 @@ export const onPreRenderHTML = (
     components = [],
     includedPaths = [],
     excludedPaths = [],
+    dirName,
+    themePath,
     pathIdentifier = "/amp/",
     relAmpHtmlPattern = "{{canonicalBaseUrl}}{{pathname}}{{pathIdentifier}}"
   }
@@ -36,16 +40,10 @@ export const onPreRenderHTML = (
   const postBodyComponents = getPostBodyComponents();
   const isAmp = pathname && pathname.indexOf(pathIdentifier) > -1;
   if (isAmp) {
-    const styles = headComponents.reduce((str, x) => {
-      if (x.type === "style") {
-        if (x.props.dangerouslySetInnerHTML) {
-          str += x.props.dangerouslySetInnerHTML.__html;
-        }
-      } else if (x.key && x.key === "TypographyStyle") {
-        str = `${x.props.typography.toString()}${str}`;
-      }
-      return str;
-    }, "");
+    const file = fs.readFileSync(path.resolve(dirName, themePath));
+
+    const styles = file.toString();
+
     replaceHeadComponents([
       <script async src="https://cdn.ampproject.org/v0.js" />,
       <style
@@ -308,9 +306,7 @@ export const replaceRenderer = (
           <script
             async
             custom-element={component.name}
-            src={`https://cdn.ampproject.org/v0/${component.name}-${
-              component.version
-            }.js`}
+            src={`https://cdn.ampproject.org/v0/${component.name}-${component.version}.js`}
           />
         </Fragment>
       ))
