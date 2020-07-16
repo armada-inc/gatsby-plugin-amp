@@ -300,6 +300,26 @@ export const replaceRenderer = (
       });
       iframe.parentNode.replaceChild(ampIframe, iframe);
     });
+    
+    // convert amp-facebook
+    const fbPosts = [].slice.call(document.getElementsByClassName("fb-post"));
+    fbPosts.forEach(fbPost => {
+      let ampFbPost;
+
+      headComponents.push({ name: "amp-facebook", version: "0.1" });
+      ampFbPost = document.createElement("amp-facebook");
+      ampFbPost.setAttribute("data-href", fbPost.attributes["data-href"].value);
+      ampFbPost.setAttribute("width", 1); // The value doesn't matter, but it's required
+      ampFbPost.setAttribute("height", 1); // The value doesn't matter, but it's required
+      ampFbPost.setAttribute("layout", "responsive");
+
+      fbPost.parentNode.replaceChild(ampFbPost, fbPost);
+    });
+
+    document.querySelectorAll("script[src^=\"https://connect.facebook.net/en_US/sdk.js\"]").forEach(script => {
+      script.remove()
+    });
+
     setHeadComponents(
       Array.from(new Set(headComponents)).map((component, i) => (
         <Fragment key={`head-components-${i}`}>
