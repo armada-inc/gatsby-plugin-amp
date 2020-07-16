@@ -300,6 +300,30 @@ export const replaceRenderer = (
       });
       iframe.parentNode.replaceChild(ampIframe, iframe);
     });
+
+     // convert amp-instagram
+    const igEmbeds = [].slice.call(document.getElementsByClassName("instagram-media"));
+    igEmbeds.forEach(igEmbed => {
+      let ampIgEmbed;
+      let shortCode;
+      let igPermalink;
+
+      igPermalink = igEmbed.attributes["data-instgrm-permalink"].value;
+      shortCode = igPermalink.match(/\/p\/(.+)\//)[1];
+
+      headComponents.push({ name: "amp-instagram", version: "0.1" });
+
+      ampIgEmbed = document.createElement("amp-instagram");
+      ampIgEmbed.setAttribute("data-shortcode", shortCode);
+      ampIgEmbed.setAttribute("layout", "responsive");
+      ampIgEmbed.setAttribute("width", 1); // The value doesn't matter, but it's required
+      ampIgEmbed.setAttribute("height", 1); // The value doesn't matter, but it's required
+      ampIgEmbed.setAttributeNode(document.createAttribute("data-captioned"));
+
+      igEmbed.parentNode.replaceChild(ampIgEmbed, igEmbed);
+    });
+
+    document.querySelectorAll("script[src=\"//www.instagram.com/embed.js\"]").forEach(script => {
     
     // convert amp-facebook
     const fbPosts = [].slice.call(document.getElementsByClassName("fb-post"));
