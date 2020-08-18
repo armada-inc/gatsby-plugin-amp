@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { renderToString } from "react-dom/server";
 import { Minimatch } from "minimatch";
-import flattenDeep from "lodash.flattendeep";
+import {flattenDeep} from "lodash";
 const JSDOM = eval('require("jsdom")').JSDOM;
 const minimatch = require("minimatch");
 import path from "path";
@@ -215,12 +215,12 @@ export const replaceRenderer = (
       const attributes = Object.keys(image.attributes);
       const includedAttributes = attributes.map((key) => {
         const attribute = image.attributes[key];
-        ampImage.setAttribute(attribute.name, attribute.value);
+        ampImage.setAttribute(attribute.name.trim(), attribute.value.trim());
         return attribute.name;
       });
       Object.keys(defaults.image).forEach((key) => {
         if (includedAttributes && includedAttributes.indexOf(key) === -1) {
-          ampImage.setAttribute(key, defaults.image[key]);
+          ampImage.setAttribute(key.trim(), defaults.image[key].trim());
         }
       });
       image.parentNode.replaceChild(ampImage, image);
@@ -236,12 +236,12 @@ export const replaceRenderer = (
       const attributes = Object.keys(post.attributes);
       const includedAttributes = attributes.map((key) => {
         const attribute = post.attributes[key];
-        ampTwitter.setAttribute(attribute.name, attribute.value);
+        ampTwitter.setAttribute(attribute.name.trim(), attribute.value.trim());
         return attribute.name;
       });
       Object.keys(defaults.twitter).forEach((key) => {
         if (includedAttributes && includedAttributes.indexOf(key) === -1) {
-          ampTwitter.setAttribute(key, defaults.twitter[key]);
+          ampTwitter.setAttribute(key.trim(), defaults.twitter[key].trim());
         }
       });
       // grab the last link in the tweet for the twee id
@@ -249,7 +249,7 @@ export const replaceRenderer = (
       const link = links[links.length - 1];
       const hrefArr = link.href.split("/");
       const id = hrefArr[hrefArr.length - 1].split("?")[0];
-      ampTwitter.setAttribute("data-tweetid", id);
+      ampTwitter.setAttribute("data-tweetid", id.trim());
       // clone the original blockquote for a placeholder
       const _post = post.cloneNode(true);
       _post.setAttribute("placeholder", "");
@@ -267,7 +267,7 @@ export const replaceRenderer = (
         ampIframe = document.createElement("amp-youtube");
         const src = iframe.src.split("/");
         const id = src[src.length - 1].split("?")[0];
-        ampIframe.setAttribute("data-videoid", id);
+        ampIframe.setAttribute("data-videoid", id.trim());
         const placeholder = document.createElement("amp-img");
         placeholder.setAttribute(
           "src",
@@ -290,12 +290,12 @@ export const replaceRenderer = (
 
       const includedAttributes = attributes.map((key) => {
         const attribute = iframe.attributes[key];
-        ampIframe.setAttribute(attribute.name, attribute.value);
+        ampIframe.setAttribute(attribute.name.trim(), attribute.value.trim());
         return attribute.name;
       });
       Object.keys(defaults.iframe).forEach((key) => {
         if (includedAttributes && includedAttributes.indexOf(key) === -1) {
-          ampIframe.setAttribute(key, defaults.iframe[key]);
+          ampIframe.setAttribute(key.trim(), defaults.iframe[key].trim());
         }
       });
       iframe.parentNode.replaceChild(ampIframe, iframe);
@@ -316,7 +316,7 @@ export const replaceRenderer = (
       headComponents.push({ name: "amp-instagram", version: "0.1" });
 
       ampIgEmbed = document.createElement("amp-instagram");
-      ampIgEmbed.setAttribute("data-shortcode", shortCode);
+      ampIgEmbed.setAttribute("data-shortcode", shortCode.trim());
       ampIgEmbed.setAttribute("layout", "responsive");
       ampIgEmbed.setAttribute("width", 1); // The value doesn't matter, but it's required
       ampIgEmbed.setAttribute("height", 1); // The value doesn't matter, but it's required
