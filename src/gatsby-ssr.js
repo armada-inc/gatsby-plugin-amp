@@ -220,7 +220,7 @@ export const replaceRenderer = (
       });
       Object.keys(defaults.image).forEach((key) => {
         if (includedAttributes && includedAttributes.indexOf(key) === -1) {
-          ampImage.setAttribute(key.trim(), defaults.image[key].trim());
+          ampImage.setAttribute(key.trim(), defaults.image[key]);
         }
       });
       image.parentNode.replaceChild(ampImage, image);
@@ -241,7 +241,7 @@ export const replaceRenderer = (
       });
       Object.keys(defaults.twitter).forEach((key) => {
         if (includedAttributes && includedAttributes.indexOf(key) === -1) {
-          ampTwitter.setAttribute(key.trim(), defaults.twitter[key].trim());
+          ampTwitter.setAttribute(key.trim(), defaults.twitter[key]);
         }
       });
       // grab the last link in the tweet for the twee id
@@ -295,7 +295,7 @@ export const replaceRenderer = (
       });
       Object.keys(defaults.iframe).forEach((key) => {
         if (includedAttributes && includedAttributes.indexOf(key) === -1) {
-          ampIframe.setAttribute(key.trim(), defaults.iframe[key].trim());
+          ampIframe.setAttribute(key.trim(), defaults.iframe[key]);
         }
       });
       iframe.parentNode.replaceChild(ampIframe, iframe);
